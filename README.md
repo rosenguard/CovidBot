@@ -5,7 +5,7 @@
 # CovidBot
 
 CovidBot is a Discord Bot made in [Python](https://python.org).
-The Bot has 
+The Bots useage is to show information about COVID-19 in Germany on your Discord server.
 
 
 ## All commands
