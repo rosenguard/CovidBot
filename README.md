@@ -1,7 +1,3 @@
-
-![Logo](http://168.119.29.125/saved/CovidBotBanner.png)
-
-
 # CovidBot
 
 CovidBot is a Discord Bot made in [Python](https://python.org).
