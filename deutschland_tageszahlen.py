@@ -17,7 +17,7 @@ class Deutschland:
         response = requests.get("https://api.corona-zahlen.org/germany")
         response_info = response.json()
         return int(response_info["deaths"])
-    
+
     def geimpft(self):
         response = requests.get("https://api.corona-zahlen.org/vaccinations")
         response_info = response.json()
