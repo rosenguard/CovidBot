@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ede91429-3f44-4376-8839-ad6906e660f6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/token.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +44,7 @@
       <option name="presentableId" value="Default" />
       <updated>1669547473211</updated>
       <workItem from="1669547476522" duration="898000" />
-      <workItem from="1669548780528" duration="2077000" />
+      <workItem from="1669548780528" duration="1941000" />
     </task>
     <servers />
   </component>
