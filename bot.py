@@ -40,14 +40,28 @@ async def on_command_error(ctx, error):
 @bot.command()
 async def help(ctx):
     embedv = discord.Embed(title="Alle Befehle", color=discord.Colour.dark_blue())
-    embedv.add_field(name="!inzidenz [...]", value="Zur Ausgabe der COVID-19-Inzidenzwerte für Deutschland, Bundesländer oder Städte. Der Standort wird nach dem eigentlichen Befehl angegeben.", inline=False)
-    embedv.add_field(name="!rwert", value="Zur Ausgabe des COVID-19-Reproduktionsfaktors für ganz Deutschland.", inline=False)
-    embedv.add_field(name="!allefälle [...]", value="Zur Ausgabe der Anzahl der an COVID-19 infizierten Personen. Der Standort wird nach dem eigentlichen Befehl angegeben.", inline=False)
-    embedv.add_field(name="!alletode [...]", value="Zur Ausgabe der Anzahl der an COVID-19 verstorbenen Personen in Deutschland, Bundesländern oder Städten. Der Standort wird nach dem eigentlichen Befehl angegeben.", inline=False)
-    embedv.add_field(name="!impfung [...]", value="Zur Ausgabe von unterschiedlichen Infos zu Impfungen in Deutschland oder Bundesländern. Der Standort wird nach dem eigentlichen Befehl angegeben.", inline=False)
-    embedv.add_field(name="!genesen [...]", value="Zur Ausgabe der Anzahl an Genesenen in Deutschland oder Bundesländern. Der Standort wird nach dem eigentlichen Befehl angegeben.", inline=False)
-    embedv.add_field(name="!impftermin", value="Um so schnell wie mögluch einen Impftermin in deiner Umgebung zu bekommen.", inline=False)
-    embedv.add_field(name="!inzidenzkarte", value="Ausgabe einer Karte mit farblicher Markierung von Inzidenzen für jede Region deutschlands", inline=False)
+    embedv.add_field(name="!inzidenz [...]",
+                     value="Zur Ausgabe der COVID-19-Inzidenzwerte für Deutschland, Bundesländer oder Städte. Der Standort wird nach dem eigentlichen Befehl angegeben.",
+                     inline=False)
+    embedv.add_field(name="!rwert", value="Zur Ausgabe des COVID-19-Reproduktionsfaktors für ganz Deutschland.",
+                     inline=False)
+    embedv.add_field(name="!allefälle [...]",
+                     value="Zur Ausgabe der Anzahl der an COVID-19 infizierten Personen. Der Standort wird nach dem eigentlichen Befehl angegeben.",
+                     inline=False)
+    embedv.add_field(name="!alletode [...]",
+                     value="Zur Ausgabe der Anzahl der an COVID-19 verstorbenen Personen in Deutschland, Bundesländern oder Städten. Der Standort wird nach dem eigentlichen Befehl angegeben.",
+                     inline=False)
+    embedv.add_field(name="!impfung [...]",
+                     value="Zur Ausgabe von unterschiedlichen Infos zu Impfungen in Deutschland oder Bundesländern. Der Standort wird nach dem eigentlichen Befehl angegeben.",
+                     inline=False)
+    embedv.add_field(name="!genesen [...]",
+                     value="Zur Ausgabe der Anzahl an Genesenen in Deutschland oder Bundesländern. Der Standort wird nach dem eigentlichen Befehl angegeben.",
+                     inline=False)
+    embedv.add_field(name="!impftermin",
+                     value="Um so schnell wie mögluch einen Impftermin in deiner Umgebung zu bekommen.", inline=False)
+    embedv.add_field(name="!inzidenzkarte",
+                     value="Ausgabe einer Karte mit farblicher Markierung von Inzidenzen für jede Region deutschlands",
+                     inline=False)
     await ctx.send(embed=embedv)
 
 
