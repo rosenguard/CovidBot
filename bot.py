@@ -6,13 +6,17 @@ from datetime import datetime
 
 # define all needed variables
 token = "YOUR_TOKEN_HERE"
-bot = commands.Bot(command_prefix="!")
-bot.remove_command("help")
 
 all_states = open("states.txt")
 all_states = all_states.read()
 all_cities = open("cities.txt", encoding="utf8")
 all_cities = all_cities.read()
+bot = Bot(
+    command_prefix=prefix,
+    description="Bot for Corona-Numbers in Germany",
+    intents=discord.Intents.all(),
+    help_command=None
+)
 
 german = deutschland_tageszahlen.Deutschland()
 states = deutschland_tageszahlen.Bundeslaender()
