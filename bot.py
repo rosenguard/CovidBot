@@ -1,5 +1,6 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
+from discord.ext.commands import Bot, Context
 import deutschland_tageszahlen
 import get_state
 from datetime import datetime
