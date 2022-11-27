@@ -6,12 +6,12 @@ import get_state
 from datetime import datetime
 
 # define all needed variables
-token = "YOUR_TOKEN_HERE"
 
 all_states = open("states.txt")
 all_states = all_states.read()
 all_cities = open("cities.txt", encoding="utf8")
 all_cities = all_cities.read()
+token = open("token.txt", "r").read()
 bot = Bot(
     command_prefix=prefix,
     description="Bot for Corona-Numbers in Germany",
