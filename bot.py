@@ -18,6 +18,7 @@ german = deutschland_tageszahlen.Deutschland()
 states = deutschland_tageszahlen.Bundeslaender()
 cities = deutschland_tageszahlen.Staedte()
 
+
 # Debug and startmessage in console:
 @bot.event
 async def on_ready():
@@ -26,10 +27,9 @@ async def on_ready():
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.channel.send("Du hast ein Argument zu dem Befehl vergessen. \n" + 
-        'Wenn du nicht weißt, wie der Befehl aufgebaut ist benutzte "!help" um eine Liste aller Befehle zu bekommen.')
         await ctx.channel.send("Du hast ein Argument zu dem Befehl vergessen. \n" +
                                'Wenn du nicht weißt, wie der Befehl aufgebaut ist benutzte "!help" um eine Liste aller Befehle zu bekommen.')
+
 
 # All commands:
 @bot.command()
@@ -47,7 +47,7 @@ async def help(ctx):
 
 
 @bot.command()
-async def inzidenz(ctx, location:None):
+async def inzidenz(ctx, location: None):
     now = datetime.now()
 
     if location.lower() in all_states.lower():
@@ -86,10 +86,11 @@ async def inzidenz(ctx, location:None):
     else:
         msg_color = discord.Color.red()
 
-    #Embed Nachricht
+    # Embed Nachricht
     embedmsg = discord.Embed(title=f"Inzidenz in {str_loc}", color=msg_color)
-    embedmsg.add_field(name="Inzidenz:",value=str1,inline=False)
+    embedmsg.add_field(name="Inzidenz:", value=str1, inline=False)
     await ctx.channel.send(embed=embedmsg)
+
 
 @bot.command()
 async def rwert(ctx):
@@ -105,8 +106,9 @@ async def rwert(ctx):
         msg_color = discord.Color.red()
 
     embedmsg = discord.Embed(title='R-Wert:', color=msg_color)
-    embedmsg.add_field(name="R-Wert:",value=str2,inline=False)
+    embedmsg.add_field(name="R-Wert:", value=str2, inline=False)
     await ctx.channel.send(embed=embedmsg)
+
 
 @bot.command()
 async def alle_faelle(ctx, location):
@@ -121,12 +123,14 @@ async def alle_faelle(ctx, location):
         ctx.channel.send("Bitte gebe einen gültigen Standort ein.")
         return
 
-    str3 = "In " + str(location) + " gabe es bis jetzt " + str(allcases) + " infizierte Personen."
+    str3 = f"In {str(location)} gabe es bis jetzt {str(all_cases)} infizierte Personen."
+
     msg_color = discord.Color.purple()
 
     embedmsg = discord.Embed(title="Alle Infektionen:", color=msg_color)
-    embedmsg.add_field(name="Anzahl an Infektionen:",value=str3,inline=False)
+    embedmsg.add_field(name="Anzahl an Infektionen:", value=str3, inline=False)
     await ctx.channel.send(embed=embedmsg)
+
 
 @bot.command()
 async def alle_tode(ctx, location):
@@ -141,13 +145,15 @@ async def alle_tode(ctx, location):
         ctx.channel.send("Bitte gebe einen gültigen Standort ein.")
         return
 
-    str3 = "In " + str(location) + " sind bis jetzt " + str(allcases) + " Personen an COVID-19 gestorben."
+    str3 = f"In {str(location)} sind bis jetzt {str(all_cases)} Personen an COVID-19 gestorben."
+
 
     msg_color = discord.Color.purple()
 
     embedmsg = discord.Embed(title="Alle Todesfälle:", color=msg_color)
-    embedmsg.add_field(name="Anzahl an Todesfällen:",value=str3,inline=False)
+    embedmsg.add_field(name="Anzahl an Todesfällen:", value=str3, inline=False)
     await ctx.channel.send(embed=embedmsg)
+
 
 @bot.command()
 async def impfung(ctx, location):
@@ -174,15 +180,14 @@ async def impfung(ctx, location):
 
     embedmsg = discord.Embed(title='Infos über Impfungen', color=msg_color)
 
-    embedmsg.add_field(name="Anzahl an erst Geimpften:",value=str1,inline=False)
-    embedmsg.add_field(name="Anzahl an zweit Geimpften:",value=str2,inline=False)
-    embedmsg.add_field(name="Impfquote:",value=str3,inline=False)
+    embedmsg.add_field(name="Anzahl an erst Geimpften:", value=str1, inline=False)
+    embedmsg.add_field(name="Anzahl an zweit Geimpften:", value=str2, inline=False)
+    embedmsg.add_field(name="Impfquote:", value=str3, inline=False)
     await ctx.channel.send(embed=embedmsg)
 
 
 @bot.command()
 async def genesen(ctx, location):
-
     if location.lower() in all_states.lower():
         new_location = get_state.change_state(location)
         recovered = states.genesen(new_location)
@@ -195,12 +200,12 @@ async def genesen(ctx, location):
         return
 
     str1 = f"In {location} sind bis jetzt {recovered} Personen von COVID-19 genesen."
-    
+
     msg_color = discord.Color.purple()
 
     embedmsg = discord.Embed(title="Infos über Genesene", color=msg_color)
 
-    embedmsg.add_field(name="Anzahl an Genesenen:",value=str1,inline=False)
+    embedmsg.add_field(name="Anzahl an Genesenen:", value=str1, inline=False)
     await ctx.channel.send(embed=embedmsg)
 
 
@@ -214,14 +219,14 @@ async def impftermin(ctx):
 
     embedmsg = discord.Embed(title="Websites um einen Impftermin zu bekommen", color=msg_color)
 
-    embedmsg.add_field(name="sofort-impfen.de",value=str1,inline=False)
-    embedmsg.add_field(name="impfterminservice.de",value=str2,inline=False)
+    embedmsg.add_field(name="sofort-impfen.de", value=str1, inline=False)
+    embedmsg.add_field(name="impfterminservice.de", value=str2, inline=False)
     await ctx.channel.send(embed=embedmsg)
+
 
 @bot.command()
 async def inzidenz_karte(ctx):
     await ctx.channel.send("https://api.corona-zahlen.org/map/districts")
-
 
 
 bot.run(token)
