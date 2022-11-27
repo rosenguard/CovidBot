@@ -6,18 +6,17 @@ import get_state
 from datetime import datetime
 
 # define all needed variables
-
-all_states = open("states.txt")
-all_states = all_states.read()
-all_cities = open("cities.txt", encoding="utf8")
-all_cities = all_cities.read()
 token = open("token.txt", "r").read()
+prefix = "!"
 bot = Bot(
     command_prefix=prefix,
     description="Bot for Corona-Numbers in Germany",
     intents=discord.Intents.all(),
     help_command=None
 )
+
+all_states = open("states.txt").read()
+all_cities = open("cities.txt", encoding="utf8").read()
 
 german = deutschland_tageszahlen.Deutschland()
 states = deutschland_tageszahlen.Bundeslaender()
