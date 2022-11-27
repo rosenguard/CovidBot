@@ -28,6 +28,8 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
         await ctx.channel.send("Du hast ein Argument zu dem Befehl vergessen. \n" + 
         'Wenn du nicht weißt, wie der Befehl aufgebaut ist benutzte "!help" um eine Liste aller Befehle zu bekommen.')
+        await ctx.channel.send("Du hast ein Argument zu dem Befehl vergessen. \n" +
+                               'Wenn du nicht weißt, wie der Befehl aufgebaut ist benutzte "!help" um eine Liste aller Befehle zu bekommen.')
 
 # All commands:
 @bot.command()
@@ -107,14 +109,14 @@ async def rwert(ctx):
     await ctx.channel.send(embed=embedmsg)
 
 @bot.command()
-async def allefälle(ctx, location):
+async def alle_faelle(ctx, location):
     if location.lower() in all_cities.lower():
-        allcases = cities.allefaelle(location)
+        all_cases = cities.allefaelle(location)
     elif location.lower() in all_states.lower():
         new_location = get_state.change_state(location)
-        allcases = states.allefaelle(new_location)
+        all_cases = states.allefaelle(new_location)
     elif location.lower() == "deutschland":
-        allcases = german.allefaelle()
+        all_cases = german.allefaelle()
     else:
         ctx.channel.send("Bitte gebe einen gültigen Standort ein.")
         return
@@ -127,14 +129,14 @@ async def allefälle(ctx, location):
     await ctx.channel.send(embed=embedmsg)
 
 @bot.command()
-async def alletode(ctx, location):
+async def alle_tode(ctx, location):
     if location.lower() in all_cities.lower():
-        allcases = cities.todesfaelle(location)
+        all_cases = cities.todesfaelle(location)
     elif location.lower() in all_states.lower():
         new_location = get_state.change_state(location)
-        allcases = states.todesfaelle(new_location)
+        all_cases = states.todesfaelle(new_location)
     elif location.lower() == "deutschland":
-        allcases = german.todesfaelle()
+        all_cases = german.todesfaelle()
     else:
         ctx.channel.send("Bitte gebe einen gültigen Standort ein.")
         return
@@ -204,8 +206,9 @@ async def genesen(ctx, location):
 
 @bot.command()
 async def impftermin(ctx):
-    str1 = "Nach Angabe von PLZ und E-Mail wirst du von sofort-imofen.de benachrichtigs, sobald eine Impfdosis übergeblieben ist."
-    str2 = "Auf dieser Seite kanst du einen festen Termin für deine Impfunge machen."
+    str1 = "Nach Angabe von PLZ und E-Mail wirst du von sofort-impfen.de benachrichtigt, sobald eine Impfdosis " \
+           "übergeblieben ist. "
+    str2 = "Auf dieser Seite kannst du einen festen Termin für deine Impfung machen."
 
     msg_color = discord.Color.magenta()
 
@@ -216,7 +219,7 @@ async def impftermin(ctx):
     await ctx.channel.send(embed=embedmsg)
 
 @bot.command()
-async def inzidenzkarte(ctx):
+async def inzidenz_karte(ctx):
     await ctx.channel.send("https://api.corona-zahlen.org/map/districts")
 
 
