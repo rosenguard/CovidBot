@@ -26,7 +26,8 @@ cities = deutschland_tageszahlen.Staedte()
 # Debug and startmessage in console:
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Game("bot.jusen.dev | !help"))
+    await bot.change_presence(activity=discord.Game("justinr.de/bot.html | !help"))
+
 
 @bot.event
 async def on_command_error(ctx, error):
