@@ -1,19 +1,21 @@
-import discord
-from discord.ext import commands, tasks
-from discord.ext.commands import Bot, Context
-import deutschland_tageszahlen
-import get_state
 from datetime import datetime
+
+import discord
+from discord import app_commands
+
+import get_state
+import deutschland_tageszahlen
 
 # define all needed variables
 token = open("token.txt", "r").read()
-prefix = "!"
-bot = Bot(
-    command_prefix=prefix,
-    description="Bot for Corona-Numbers in Germany",
-    intents=discord.Intents.all(),
-    help_command=None
+guild_id = open("guild_id.txt", "r").read()
+
+intents = discord.Intents.default()
+client = discord.Client(
+    intents=intents,
+    description="Bot for COVID-Statistics in Germany"
 )
+tree = app_commands.CommandTree(client)
 
 all_states = open("states.txt").read()
 all_cities = open("cities.txt", encoding="utf8").read()
@@ -23,76 +25,76 @@ states = deutschland_tageszahlen.Bundeslaender()
 cities = deutschland_tageszahlen.Staedte()
 
 
-# Debug and startmessage in console:
-@bot.event
+# Debug and start message in console:
+@client.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Game("justinr.de/bot.html | !help"))
+    await tree.sync(guild=discord.Object(id=guild_id))
+    await client.change_presence(activity=discord.Game("justinr.de/bot.html | !help"))
+    print("Ready!")
 
 
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.channel.send("Du hast ein Argument zu dem Befehl vergessen. \n" +
-                               'Wenn du nicht weißt, wie der Befehl aufgebaut ist benutzte "!help" um eine Liste aller Befehle zu bekommen.')
-
-
-# All commands:
-@bot.command()
-async def help(ctx):
+@tree.command(name="help", description="All usable commands", guild=discord.Object(id=guild_id))
+async def help(interaction):
     embedv = discord.Embed(title="Alle Befehle", color=discord.Colour.dark_blue())
-    embedv.add_field(name="!inzidenz [...]",
-                     value="Zur Ausgabe der COVID-19-Inzidenzwerte für Deutschland, Bundesländer oder Städte. Der Standort wird nach dem eigentlichen Befehl angegeben.",
+    embedv.add_field(name="inzidenz [...]",
+                     value="Zur Ausgabe der COVID-19-Inzidenzwerte für Deutschland, Bundesländer oder Städte. Der "
+                           "Standort wird nach dem eigentlichen Befehl angegeben.",
                      inline=False)
-    embedv.add_field(name="!rwert", value="Zur Ausgabe des COVID-19-Reproduktionsfaktors für ganz Deutschland.",
+    embedv.add_field(name="rwert", value="Zur Ausgabe des COVID-19-Reproduktionsfaktors für ganz Deutschland.",
                      inline=False)
-    embedv.add_field(name="!allefälle [...]",
-                     value="Zur Ausgabe der Anzahl der an COVID-19 infizierten Personen. Der Standort wird nach dem eigentlichen Befehl angegeben.",
+    embedv.add_field(name="allefälle [...]",
+                     value="Zur Ausgabe der Anzahl der an COVID-19 infizierten Personen. Der Standort wird nach dem "
+                           "eigentlichen Befehl angegeben.",
                      inline=False)
-    embedv.add_field(name="!alletode [...]",
-                     value="Zur Ausgabe der Anzahl der an COVID-19 verstorbenen Personen in Deutschland, Bundesländern oder Städten. Der Standort wird nach dem eigentlichen Befehl angegeben.",
+    embedv.add_field(name="alletode [...]",
+                     value="Zur Ausgabe der Anzahl der an COVID-19 verstorbenen Personen in Deutschland, "
+                           "Bundesländern oder Städten. Der Standort wird nach dem eigentlichen Befehl angegeben.",
                      inline=False)
-    embedv.add_field(name="!impfung [...]",
-                     value="Zur Ausgabe von unterschiedlichen Infos zu Impfungen in Deutschland oder Bundesländern. Der Standort wird nach dem eigentlichen Befehl angegeben.",
+    embedv.add_field(name="impfung [...]",
+                     value="Zur Ausgabe von unterschiedlichen Infos zu Impfungen in Deutschland oder Bundesländern. "
+                           "Der Standort wird nach dem eigentlichen Befehl angegeben.",
                      inline=False)
-    embedv.add_field(name="!genesen [...]",
-                     value="Zur Ausgabe der Anzahl an Genesenen in Deutschland oder Bundesländern. Der Standort wird nach dem eigentlichen Befehl angegeben.",
+    embedv.add_field(name="genesen [...]",
+                     value="Zur Ausgabe der Anzahl an Genesenen in Deutschland oder Bundesländern. Der Standort wird "
+                           "nach dem eigentlichen Befehl angegeben.",
                      inline=False)
-    embedv.add_field(name="!impftermin",
+    embedv.add_field(name="impftermin",
                      value="Um so schnell wie mögluch einen Impftermin in deiner Umgebung zu bekommen.", inline=False)
-    embedv.add_field(name="!inzidenzkarte",
+    embedv.add_field(name="inzidenzkarte",
                      value="Ausgabe einer Karte mit farblicher Markierung von Inzidenzen für jede Region deutschlands",
                      inline=False)
-    await ctx.send(embed=embedv)
+    await interaction.response.send_message(embed=embedv)
 
 
-@bot.command()
-async def inzidenz(ctx, location: None):
+@tree.command(name="inzidenz", description="Show current Inzidenz", guild=discord.Object(id=guild_id))
+async def inzidenz(interaction, location: str):
     now = datetime.now()
 
     if location.lower() in all_states.lower():
         new_location = get_state.change_state(location)
         inzidenzwert = float(states.wocheninzidenz(new_location))
         if inzidenzwert == "error".lower():
-            await ctx.channel.send("Du hast etwas falsch eingegeben versuche es erneut.")
+            await interaction.response.send_message("Du hast etwas falsch eingegeben versuche es erneut.")
             return
 
     if location.lower() in all_cities.lower():
         inzidenzwert = cities.wocheninzidenz(location)
         if inzidenzwert == "error".lower():
-            await ctx.channel.send("Du hast etwas falsch eingegeben versuche es erneut.")
+            await interaction.response.send_message("Du hast etwas falsch eingegeben versuche es erneut.")
             return
 
     elif location.lower() == "deutschland" or location == "" or None:
         inzidenzwert = german.wocheninzidenz()
         if inzidenzwert == "error".lower():
-            await ctx.channel.send("Du hast etwas falsch eingegeben versuche es erneut.")
+            await interaction.response.send_message("Du hast etwas falsch eingegeben versuche es erneut.")
             return
 
     else:
         if datetime.time(0, 0) < now < datetime.time(1, 45):
-            await ctx.channel.send("Die Werte Aktualisieren sich gerade versuche es in einigen Minuten erneut.")
+            await interaction.response.send_message("Die Werte Aktualisieren sich gerade versuche es in einigen "
+                                                    "Minuten erneut.")
         else:
-            await ctx.channel.send("Du hast etwas falsch eingegeben versuche es erneut.")
+            await interaction.response.send_message("Du hast etwas falsch eingegeben versuche es erneut.")
         return
 
     str_loc = location.capitalize()
@@ -108,11 +110,11 @@ async def inzidenz(ctx, location: None):
     # Embed Nachricht
     embedmsg = discord.Embed(title=f"Inzidenz in {str_loc}", color=msg_color)
     embedmsg.add_field(name="Inzidenz:", value=str1, inline=False)
-    await ctx.channel.send(embed=embedmsg)
+    await interaction.response.send_message(embed=embedmsg)
 
 
-@bot.command()
-async def rwert(ctx):
+@tree.command(name="rwert", description="Show current rwert", guild=discord.Object(id=guild_id))
+async def rwert(interaction):
     r_wert = german.rwert()
 
     str2 = "Der Reproduktionsfaktor in Deutschland liegt bei " + str(r_wert) + "."
@@ -126,11 +128,11 @@ async def rwert(ctx):
 
     embedmsg = discord.Embed(title='R-Wert:', color=msg_color)
     embedmsg.add_field(name="R-Wert:", value=str2, inline=False)
-    await ctx.channel.send(embed=embedmsg)
+    await interaction.response.send_message(embed=embedmsg)
 
 
-@bot.command()
-async def alle_faelle(ctx, location):
+@tree.command(name="allcases", description="Show all current cases", guild=discord.Object(id=guild_id))
+async def alle_faelle(interaction, location: str):
     if location.lower() in all_cities.lower():
         all_cases = cities.allefaelle(location)
     elif location.lower() in all_states.lower():
@@ -139,7 +141,7 @@ async def alle_faelle(ctx, location):
     elif location.lower() == "deutschland":
         all_cases = german.allefaelle()
     else:
-        ctx.channel.send("Bitte gebe einen gültigen Standort ein.")
+        await interaction.response.send_message("Bitte gebe einen gültigen Standort ein.")
         return
 
     str3 = f"In {str(location)} gabe es bis jetzt {str(all_cases)} infizierte Personen."
@@ -148,11 +150,11 @@ async def alle_faelle(ctx, location):
 
     embedmsg = discord.Embed(title="Alle Infektionen:", color=msg_color)
     embedmsg.add_field(name="Anzahl an Infektionen:", value=str3, inline=False)
-    await ctx.channel.send(embed=embedmsg)
+    await interaction.response.send_message(embed=embedmsg)
 
 
-@bot.command()
-async def alle_tode(ctx, location):
+@tree.command(name="alldeaths", description="Show all deaths", guild=discord.Object(id=guild_id))
+async def all_deaths(interaction, location: str):
     if location.lower() in all_cities.lower():
         all_cases = cities.todesfaelle(location)
     elif location.lower() in all_states.lower():
@@ -161,21 +163,20 @@ async def alle_tode(ctx, location):
     elif location.lower() == "deutschland":
         all_cases = german.todesfaelle()
     else:
-        ctx.channel.send("Bitte gebe einen gültigen Standort ein.")
+        await interaction.response.send_message("Bitte gebe einen gültigen Standort ein.")
         return
 
     str3 = f"In {str(location)} sind bis jetzt {str(all_cases)} Personen an COVID-19 gestorben."
-
 
     msg_color = discord.Color.purple()
 
     embedmsg = discord.Embed(title="Alle Todesfälle:", color=msg_color)
     embedmsg.add_field(name="Anzahl an Todesfällen:", value=str3, inline=False)
-    await ctx.channel.send(embed=embedmsg)
+    await interaction.response.send_message(embed=embedmsg)
 
 
-@bot.command()
-async def impfung(ctx, location):
+@tree.command(name="vaccinations", description="Show all vaccinations", guild=discord.Object(id=guild_id))
+async def vaccinations(interaction, location: str):
     if location.lower() in all_states.lower():
         new_location = get_state.change_state(location)
         first_vacc = states.geimpft(new_location)
@@ -188,7 +189,7 @@ async def impfung(ctx, location):
         quote = german.impfquote(location)
 
     else:
-        ctx.channel.send("Bitte gebe einen gültigen Standort ein.")
+        await interaction.response.send_message("Bitte gebe einen gültigen Standort ein.")
         return
 
     str1 = f"In {location}, wurden bis jetzt {first_vacc} Personen das erste Mal geimpft."
@@ -202,11 +203,11 @@ async def impfung(ctx, location):
     embedmsg.add_field(name="Anzahl an erst Geimpften:", value=str1, inline=False)
     embedmsg.add_field(name="Anzahl an zweit Geimpften:", value=str2, inline=False)
     embedmsg.add_field(name="Impfquote:", value=str3, inline=False)
-    await ctx.channel.send(embed=embedmsg)
+    await interaction.response.send_message(embed=embedmsg)
 
 
-@bot.command()
-async def genesen(ctx, location):
+@tree.command(name="recovered", description="Show all recovered", guild=discord.Object(id=guild_id))
+async def recovered(interaction, location: str):
     if location.lower() in all_states.lower():
         new_location = get_state.change_state(location)
         recovered = states.genesen(new_location)
@@ -215,7 +216,7 @@ async def genesen(ctx, location):
         recovered = german.genesen(location)
 
     else:
-        await ctx.channel.send("Bitte gebe einen gültigen Standort ein.")
+        await interaction.response.send_message("Bitte gebe einen gültigen Standort ein.")
         return
 
     str1 = f"In {location} sind bis jetzt {recovered} Personen von COVID-19 genesen."
@@ -225,11 +226,11 @@ async def genesen(ctx, location):
     embedmsg = discord.Embed(title="Infos über Genesene", color=msg_color)
 
     embedmsg.add_field(name="Anzahl an Genesenen:", value=str1, inline=False)
-    await ctx.channel.send(embed=embedmsg)
+    await interaction.response.send_message(embed=embedmsg)
 
 
-@bot.command()
-async def impftermin(ctx):
+@tree.command(name="vaccinationdate", description="Show vaccination date", guild=discord.Object(id=guild_id))
+async def vaccination_date(interaction):
     str1 = "Nach Angabe von PLZ und E-Mail wirst du von sofort-impfen.de benachrichtigt, sobald eine Impfdosis " \
            "übergeblieben ist. "
     str2 = "Auf dieser Seite kannst du einen festen Termin für deine Impfung machen."
@@ -240,12 +241,12 @@ async def impftermin(ctx):
 
     embedmsg.add_field(name="sofort-impfen.de", value=str1, inline=False)
     embedmsg.add_field(name="impfterminservice.de", value=str2, inline=False)
-    await ctx.channel.send(embed=embedmsg)
+    await interaction.response.send_message(embed=embedmsg)
 
 
-@bot.command()
-async def inzidenz_karte(ctx):
-    await ctx.channel.send("https://api.corona-zahlen.org/map/districts")
+@tree.command(name="incidencemap", description="Show incidence map", guild=discord.Object(id=guild_id))
+async def incidence_map(interaction):
+    await interaction.response.send_message("https://api.corona-zahlen.org/map/districts")
 
 
-bot.run(token)
+client.run(token)
