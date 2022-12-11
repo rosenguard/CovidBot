@@ -8,7 +8,7 @@ import deutschland_tageszahlen
 
 # define all needed variables
 token = open("token.txt", "r").read()
-guild_id = open("guild_id.txt", "r").read()
+guild_id = None
 
 intents = discord.Intents.default()
 client = discord.Client(
@@ -28,12 +28,12 @@ cities = deutschland_tageszahlen.Staedte()
 # Debug and start message in console:
 @client.event
 async def on_ready():
-    await tree.sync(guild=discord.Object(id=guild_id))
+    await tree.sync(guild=None)
     await client.change_presence(activity=discord.Game("justinr.de/bot.html | !help"))
     print("Ready!")
 
 
-@tree.command(name="help", description="All usable commands", guild=discord.Object(id=guild_id))
+@tree.command(name="help", description="All usable commands")
 async def help(interaction):
     embedv = discord.Embed(title="Alle Befehle", color=discord.Colour.dark_blue())
     embedv.add_field(name="inzidenz [...]",
@@ -66,7 +66,7 @@ async def help(interaction):
     await interaction.response.send_message(embed=embedv)
 
 
-@tree.command(name="inzidenz", description="Show current Inzidenz", guild=discord.Object(id=guild_id))
+@tree.command(name="inzidenz", description="Show current Inzidenz")
 async def inzidenz(interaction, location: str):
     now = datetime.now()
 
@@ -113,7 +113,7 @@ async def inzidenz(interaction, location: str):
     await interaction.response.send_message(embed=embedmsg)
 
 
-@tree.command(name="rwert", description="Show current rwert", guild=discord.Object(id=guild_id))
+@tree.command(name="rwert", description="Show current rwert")
 async def rwert(interaction):
     r_wert = german.rwert()
 
@@ -131,7 +131,7 @@ async def rwert(interaction):
     await interaction.response.send_message(embed=embedmsg)
 
 
-@tree.command(name="allcases", description="Show all current cases", guild=discord.Object(id=guild_id))
+@tree.command(name="allcases", description="Show all current cases")
 async def alle_faelle(interaction, location: str):
     if location.lower() in all_cities.lower():
         all_cases = cities.allefaelle(location)
@@ -153,7 +153,7 @@ async def alle_faelle(interaction, location: str):
     await interaction.response.send_message(embed=embedmsg)
 
 
-@tree.command(name="alldeaths", description="Show all deaths", guild=discord.Object(id=guild_id))
+@tree.command(name="alldeaths", description="Show all deaths")
 async def all_deaths(interaction, location: str):
     if location.lower() in all_cities.lower():
         all_cases = cities.todesfaelle(location)
@@ -175,7 +175,7 @@ async def all_deaths(interaction, location: str):
     await interaction.response.send_message(embed=embedmsg)
 
 
-@tree.command(name="vaccinations", description="Show all vaccinations", guild=discord.Object(id=guild_id))
+@tree.command(name="vaccinations", description="Show all vaccinations")
 async def vaccinations(interaction, location: str):
     if location.lower() in all_states.lower():
         new_location = get_state.change_state(location)
@@ -206,7 +206,7 @@ async def vaccinations(interaction, location: str):
     await interaction.response.send_message(embed=embedmsg)
 
 
-@tree.command(name="recovered", description="Show all recovered", guild=discord.Object(id=guild_id))
+@tree.command(name="recovered", description="Show all recovered")
 async def recovered(interaction, location: str):
     if location.lower() in all_states.lower():
         new_location = get_state.change_state(location)
@@ -229,7 +229,7 @@ async def recovered(interaction, location: str):
     await interaction.response.send_message(embed=embedmsg)
 
 
-@tree.command(name="vaccinationdate", description="Show vaccination date", guild=discord.Object(id=guild_id))
+@tree.command(name="vaccinationdate", description="Show vaccination date")
 async def vaccination_date(interaction):
     str1 = "Nach Angabe von PLZ und E-Mail wirst du von sofort-impfen.de benachrichtigt, sobald eine Impfdosis " \
            "übergeblieben ist. "
@@ -244,7 +244,7 @@ async def vaccination_date(interaction):
     await interaction.response.send_message(embed=embedmsg)
 
 
-@tree.command(name="incidencemap", description="Show incidence map", guild=discord.Object(id=guild_id))
+@tree.command(name="incidencemap", description="Show incidence map")
 async def incidence_map(interaction):
     await interaction.response.send_message("https://api.corona-zahlen.org/map/districts")
 
