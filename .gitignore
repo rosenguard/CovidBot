@@ -3,3 +3,4 @@
 /venv/
 *.pyc
 token.txt
+guild_id.txt
