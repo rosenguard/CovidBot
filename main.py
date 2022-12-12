@@ -30,7 +30,13 @@ cities = deutschland_tageszahlen.Staedte()
 async def on_ready():
     await tree.sync(guild=None)
     await client.change_presence(activity=discord.Game("justinr.de/bot.html | !help"))
-    print("Ready!")
+    
+    print("Bot is ready!")
+    print(f"Logged in as: {client.user.name}")
+    print(f"ID: {client.user.id}")
+    print("------")
+    print(f"Started at: {str(datetime.now())}")
+    print("------")
 
 
 @tree.command(name="help", description="All usable commands")
