@@ -55,6 +55,3 @@ Now the Bot should run without any problems :D
 
 - [Justin Rosengart | justinrDEV](https://www.github.com/justinrDEV)
 - [Niklas Brockner | NiiklasDEV](https://www.github.com/NiiklasDEV)
-
-#### In Assosiation with:
-- [Jan | Restryke](https://github.com/Restryke)
